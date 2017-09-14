@@ -3,7 +3,6 @@
 
 # In[1]:
 
-
 import numpy as np
 import requests
 import tarfile, os
@@ -26,9 +25,10 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.metrics import confusion_matrix, classification_report
 
+#dataset link: https://spamassassin.apache.org/old/publiccorpus/
+
 
 # In[2]:
-
 
 class ReplaceURLs(BaseEstimator, TransformerMixin):
     def __init__(self, replace = True):
@@ -55,8 +55,6 @@ class ReplaceNumbers(BaseEstimator, TransformerMixin):
 
 # In[3]:
 
-
-#dataset link: https://spamassassin.apache.org/old/publiccorpus/
 spam_filename = "20021010_spam.tar.bz2"
 ham_filename = "20021010_easy_ham.tar.bz2"
 
@@ -71,7 +69,6 @@ tar.close()
 
 
 # In[4]:
-
 
 spam_folder = "spam"
 ham_folder = "easy_ham"
@@ -94,20 +91,17 @@ for filename in os.listdir(ham_folder):
 
 # In[5]:
 
-
 X = np.concatenate([spam_array, ham_array])
 
 
 # In[6]:
 
-
 y = np.full((1,X.shape[0]),1) #all spam y's get 1s
-y[0][len(spam_array):] = 0 #analogue for ham y's
+y[0][len(spam_array):] = 0 #all ham y's get 0s
 y = np.ravel(y)
 
 
 # In[7]:
-
 
 pipeline = Pipeline([
     ('ReplaceURLs',ReplaceURLs(replace=True)),
@@ -120,8 +114,7 @@ X = pipeline.fit_transform(X)
 
 # In[8]:
 
-
-shuffle_index = np.random.permutation(X.shape[0]) #used to shuffle both X and y matrices
+shuffle_index = np.random.permutation(X.shape[0])
 X = X[shuffle_index]
 y = y[shuffle_index]
 
@@ -131,27 +124,23 @@ y_train, y_test = y[:2400], y[2400:]
 
 # In[9]:
 
-
 models = [KNeighborsClassifier(), RandomForestClassifier(), DecisionTreeClassifier(), SGDClassifier()]
-results = [None] * 4
 for index, model in enumerate(models):
     models[index] = model.fit(X_train, y_train)
 
 
 # In[10]:
 
-
-for model in models:
-    prediction_train = cross_val_predict(model, X_train, y_train, cv=3)
-    print("Train data\n",classification_report(prediction_train,y_train),"\n",confusion_matrix(y_train,prediction_train))
-    
-    prediction_test = model.predict(X_test)
-    print("\nTest data\n",confusion_matrix(y_test,prediction_test))
-    print("Accuracy: ",accuracy_score(y_test,prediction_test),"\n")
+#for model in models: #uncomment if you want to train all 4 models in array models
+#    prediction_train = cross_val_predict(model, X_train, y_train, cv=3)
+#    print("Train data\n",classification_report(prediction_train,y_train),"\n",confusion_matrix(y_train,prediction_train))
+#    
+#    prediction_test = model.predict(X_test)
+#    print("\nTest data\n",confusion_matrix(y_test,prediction_test))
+#    print("Accuracy: ",accuracy_score(y_test,prediction_test),"\n")
 
 
 # In[11]:
-
 
 #model #3 - DecisionTreeClassifier has the best precision/recall ratio, lets train it
 
@@ -170,11 +159,15 @@ dtc = grid_search.best_estimator_
 
 # In[12]:
 
-
 prediction_train = cross_val_predict(dtc, X_train, y_train, cv=3)
 print("Train data\n",classification_report(prediction_train,y_train),"\n",confusion_matrix(y_train,prediction_train))
 
 prediction_test = dtc.predict(X_test)
 print("\nTest data\n",confusion_matrix(y_test,prediction_test))
 print("\nAccuracy: ",accuracy_score(y_test,prediction_test))
+
+
+# In[ ]:
+
+
 
