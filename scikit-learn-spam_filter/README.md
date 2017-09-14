@@ -6,3 +6,5 @@ A spam filter, created by training various classifiers with Apache SpamAssassin 
 were used to obtain information about them. Better parameters were found for DecisionTreeClassifier and small impovement was made.
 
 - Jupyter Notebook was used for writing the code.
+
+To run the code, simply open spam_filter.ipynb and see results at the bottom
