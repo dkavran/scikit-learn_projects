@@ -5,4 +5,4 @@ One-Vs-All multiclass SVM classification of MNIST digit dataset
 - Selecting predictions based on highest probability, calculated by individual classificator, for each test case
 - Classificators reach around 0.86 F1 score
 
-- To run the code, simply open SVM_classification.ipynb and see results at the bottom
+To run the code, simply open SVM_classification.ipynb and see results at the bottom
